@@ -1,0 +1,116 @@
+===================================================================================
+This Code Book describes the data, variables and methodology used in the associated run_analysis.R script
+===================================================================================
+
+Study Design:
+=============
+
+The data for this study was sourced from a study by the Center for Machine Learning and Intelligent Systems at the University of California, Irvine. 
+
+"A group of 30 volunteers aged 19-48 years each performed six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a smartphone (Samsung Galaxy S II) on the waist. 3-axial linear acceleration and 3-axial angular velocity data was captured from the device's embedded accelerometer and gyroscope at a constant rate of 50Hz. From this data, 70% were selected for training and 30% for testing."
+
+Full details can be found here: 
+
+http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones
+
+Description of Measurements:
+============================
+
+The dataset "motion_data.txt" contains the average value for each measurement, for each activity, over all of the subjects. 
+
+The measurements come from the accelerometer and gyroscope 3-axial raw signals tAcc-XYZ and tGyro-XYZ. Representing the time domain, they were collected at 50Hz. Filtering was performed using a median filter and a 3rd order low pass Butterworth filter with a corner frequency of 20 Hz to remove noise. Another low pass Butterworth filter with a corner frequency of 0.3 Hz was then used to separate the acceleration signal to body and gravitational acceleration. (tBodyAcc-XYZ and tGravityAcc-XYZ).
+
+The body linear acceleration and angular velocity were derived in time to obtain Jerk signals (tBodyAccJerk-XYZ and tBodyGyroJerk-XYZ). The magnitude of these three-dimensional signals were calculated using the Euclidean norm (tBodyAccMag, tGravityAccMag, tBodyAccJerkMag, tBodyGyroMag, tBodyGyroJerkMag).
+
+A Fast Fourier Transform (FFT), to represent the frequency domain, was applied to some of these signals producing fBodyAcc-XYZ, fBodyAccJerk-XYZ, fBodyGyro-XYZ, fBodyAccJerkMag, fBodyGyroMag, fBodyGyroJerkMag.
+
+Each signal (other than the magnitude calculations) was represented as 3-axial signals in the X, Y and Z directions.
+
+From these signals the mean (mean()) and standard deviation (std()) were estimated - and these variables were used to create this dataset.
+ 
+
+Code Book:
+==========
+
+The full list of measurements are as follows:
+
+tBodyAcc: Body Acceleration (ms-2)
+
+tGravityAcc: Gravitational Acceleration (ms-2)
+
+tBodyAccJerk:Body Linear Acceleration Jerk (ms-3)
+
+tBodyGyro: Body Angular Velocity (rads-1) 
+
+tBodyGyroJerk: Body Angular Velocity Jerk (ms-3)
+
+tBodyAccMag: Magnitude of Body Acceleration (ms-2)
+
+tGravityAccMag: Magnitude of Gravitational Acceleration (ms-2)
+
+tBodyAccJerkMag: Magnitude of Body Linear Acceleration Jerk (ms-3)
+
+tBodyGyroMag: Magnitude of Body Angular Velocity (rads-1)
+
+tBodyGyroJerkMag: Magnitude of Body Angular Velocity Jerk (ms-3)
+
+fBodyAcc: FFT Body Acceleration (ms-2)
+
+fBodyAccJerk: FFT Body Acceleration Jerk (ms-3)
+
+fBodyGyro: FFT Body Angular Velocity (rads-1)
+
+fBodyAccMag: Magnitude of FFT Body Acceleration (ms-2)
+
+fBodyBodyAccJerkMag: Magnitude of FFT Body Acceleration Jerk (ms-3)
+
+fBodyBodyGyroMag: Magnitude of FFT Body Angular Velocity (rads-1)
+
+fBodyBodyGyroJerkMag: Magnitude of FFT Body Angular Velcity Jerk (ms-3)
+
+
+Description of Process:
+=======================
+
+1. First we read in the raw data. 
+
+    "test" represents the test data
+    "train" represents the training data
+
+2. Then we load the list of activities related to each subject observation.
+
+    "test_act" represents the activities related to the test set
+    "training_act" represents the activities related to the training set
+
+3. Next we merge the two datasets to form one dataset. Here rbind() is used to copy one dataset onto the bottom of the other, since the columns are equal. 
+
+    "data" represents the merged data
+    "data_act" represents the merged activities
+
+4. For the final dataset we are only interested in the variables representing the mean and the standard deviation, so a subset of the data was created containing only these variables. 
+
+    "cols" represents the column numbers which contain mean and standard deviation values. 
+    
+5. Then we add a column to the dataset containing the activity performed for each subject. This is done using cbind().
+
+6. Read in the files containing the labels for each of the features (measurements) and activities
+
+    "features" represents the measurement labels
+    "activities" represents the activity labels
+
+7. The measurement names are subsetted as above and used to label the data.
+
+8. The values in the activity column are replaced with their label.
+
+9. For the final dataset the average value for each measurement, for each activity, over all of the observations is given. For example, for the first measurement "tBodyAcc-mean()-X", six average values are given, one for each of the activity types. Therefore all measurements representing each activity type needs to be grouped together. This is done using split(). Then for each of the splits, after a check is made to make sure all of the data is represented as numeric, the mean for each measurement is calculated using sapply(), which outputs a vector containing the mean for each measurement for each activity. The generated vectors are then combined into a final data frame using rbind().
+
+    "data_split" represents the split data
+    "tmp" represents a temporary list to hold each of the splits in the loop
+    "row" represents the vector output of the sapply() function
+    "final_data" represents the final clean dataset
+
+10. The columns and rows of the final dataset are then named using the labels identified above. 
+
+11. Finally the clean dataset is written to a tab delimited text file labelled "motion_data.txt" 
+
+
